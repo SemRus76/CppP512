@@ -30,6 +30,11 @@ int main() // Это главная функция программы - Ее н�
 
 
     cout << "Hello World" << endl;
+
+    cout << "Hello World" << endl;
+    cout << "Hello World" << endl;
+
+    cout << "Hello World" << endl;
     cout << "Hello World" << endl;
     cout << "Hello World" << endl;
     cout << "Hello World" << endl;
