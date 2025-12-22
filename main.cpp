@@ -2,8 +2,9 @@
 #include <iostream> // Подключение библиотеки ввода/вывода
 #include <fstream>
 #include <string>
+#include <stdio.h>
 #include <stdlib.h>
-#include <cstdlib>
+// #include <cstdlib>
 #include <math.h>
 #include <termios.h>
 #include <unistd.h>
@@ -16,6 +17,8 @@
 #include "queue.h"
 #include "vector.h"
 #include "set.h"
+
+#define STR_HELLO "Hello World"
 
 using namespace std;
 
@@ -43,6 +46,122 @@ using namespace std;
  *
  */
 
+/*
+ *  Файлы
+ *
+ *  Data Stream - Потоки Данных - обобщение всей системы управления общения программы с внешними подключемыми вещами - терминал/консоль, сетевые сокеты, процессы/потоки и файлы
+ *
+ *  Для работы с файлами используется библиотека fstream
+ *
+ *  std::fstream <имя переменной>;
+ *  std::fstream <имя переменной>(<путь до файла>, <модификатор открытия>);
+ *
+ *  Модификаторы открытия файлов:
+ *
+ *      std::ios_base::in - только чтение
+ *      std::ios_base::out - только запись
+ *
+ *      std::ios_base::app - запись в конец файла
+ *      std::ios_base::trunc - очистить файл перед открытием
+ *
+ *  ВАЖНО - если файл открывается на чтение, но его не существует - ОН НЕ ОТКРОЕТСЯ!
+ *  ВАЖНО - если файл открывается на запись, но его не существует - ОН СОЗДАСТСЯ!
+ *  ВАЖНО - если файл открывается на запись и он существует - ОН ПЕРЕЗАПИШЕТСЯ!
+ *  ВАЖНО - если файл открывается И на чтение И на запись и он существует - он будет читаться и записываться с самого начала!
+ *
+ *  ВАЖНО - Модификаторы открытия файла МОЖНО комбинировать
+ *
+ *  open(<путь до файла>, <модификатор открытия>) - делает попытку открыть файл по пути <путь к файлу> с модификатором <модификатор открытия>
+ *
+ *  ВАЖНО - open вовсе НЕ ГАРАНТИРУЕТ открытие файла!
+ *
+ *  is_open() - возвращает true, если удалось открыть файл с указанным модификатором, иначе false
+ *
+ *  Для закрытия файла используется команда close();
+ *  ВАЖНО - ФАЙЛЫ ВСЕГДА НУЖНО ЗАКРЫВАТЬ ПРИ ЗАВЕРШЕНИИ РАБОТЫ С НИМИ
+ *
+ *  Как читать и писать в файл?
+ *
+ *  Читать можно 2 способами:
+ *
+ *      - Используя поток данных '>>'
+ *          Плюсы - не заморачиваемся с типами, особенно если знаем что у нас лежит в файле
+ *          Например: file >> name(string) >> age(int) >> salary(double);
+ *          Минусы: читает до первого пробела (то есть нужно вызывать много раз)
+ *
+ *      - Использовать функции C и std::string - getline и getchar
+ *          Плюсы - можно прочитать строку целиком и потом програмно ее разобрать
+ *          Минусы - если использовать функции C, то нужно точно знать размеры строки
+ *                      и кол-во символов в ней
+ *
+ *  функция eof() - вернет true, если каретка достигла конца файла, иначе false
+ *
+ *  tellg() - Узнать текущую позицию позволяет функция - вернет позицию каретки (int) или -1
+ *
+ *  seekg(ios_base::<начало или конец>) - позволяет переместить каретку в указанную позицию
+ *      Принимает два варианта позиций:
+ *          ios_base::beg - в начало
+ *          ios_base::end - в конец
+ *
+ *  Писать в файл можно одним способом:
+ *
+ *      - Используя поток данных '<<'
+ *
+ *  ВАЖНО - если файл открыт только на чтение - то вы не получите ошибки. Операция просто будет не выполнена
+ *
+ *  flush() - принудительная запись
+ *
+ */
+
+int main() // Это главная функция программы - Ее начало и ее конец
+{
+    // setlocale(LC_ALL, "RUS");
+    // setConsoleCP(1251);
+    // setConsoleOutputCP(1251);
+
+    std::string filePath("test.txt");
+
+    std::fstream file;
+    file.open( filePath, std::ios_base::in | std::ios_base::out | std::ios_base::app);
+
+    if(!file.is_open())
+    {
+        cout << "Мы НЕ ОТКРЫЛИ ФАЙЛ" << endl;
+    }
+    else
+    {
+        cout << "Мы ОТКРЫЛИ ФАЙЛ" << endl;
+    }
+    cout << "-===============-" << endl;
+
+
+
+    std::string temp;
+
+    while(!file.eof())
+    {
+        std::string tmp;
+        file >> tmp;
+        if (temp.empty())
+            temp += tmp;
+        else
+            temp += ' ' + tmp;
+    }
+
+    cout << temp;
+
+    file.close();
+    file.open(filePath, ios_base::app);
+
+    // file.seekg(ios_base::end);
+    file << 3.14 << " Hello World " << 5 << std::endl;
+
+
+    file.flush();
+    file.close();
+
+    return 0;
+}
 
 char getch()
 {
@@ -55,73 +174,5 @@ char getch()
     tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
     return c;
 }
-
-int main() // Это главная функция программы - Ее начало и ее конец
-{
-    // setlocale(LC_ALL, "RUS");
-    // setConsoleCP(1251);
-    // setConsoleOutputCP(1251);
-
-    cout << "Hello World" << endl;
-
-    // cout << "\033[31mred text\n" << endl;
-
-    std::cout << "Нажмите любую клавишу..." << std::endl;
-    char c = getch();
-    c = getch();
-    std::cout << "\nВы нажали: " << c << std::endl;
-    return 0;
-}
-
-// int menu(string* strMenu, const int& size)
-// {
-//     int punctMenu = -1;
-//     int nowPunct = 0;
-//     HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
-//     int back = 2, front = 0;
-//     while (punctMenu < 0)
-//     {
-//         for (int i = 0; i < size; ++i)
-//         {
-//             if (i == nowPunct)
-//                 SetConsoleTextAttribute(console, (WORD) back  << 4 | front);
-//             else
-//                 SetConsoleTextAttribute(console, (WORD) front << 4 | back);
-
-//             cout << strMenu[i] << endl;
-//         }
-
-//         int numKey = _getch();
-//         if (numKey == 224)
-//             numKey = _getch();
-
-//         switch (numKey)
-//         {
-//         case 72: // Key_UP
-//             if (nowPunct == 0)
-//                 nowPunct = size - 1;
-//             else
-//                 --nowPunct;
-//             break;
-//         case 80: // Key_DOWN
-//             if (nowPunct == size - 1)
-//                 nowPunct = 0;
-//             else
-//                 ++nowPunct;
-//             break;
-//         case 13: // Key_Enter
-//             punctMenu = nowPunct;
-//             break;
-//         default:
-//             break;
-//         }
-
-//         system("cls");
-
-//     }
-
-//     return punctMenu;
-// }
-
 
 
