@@ -9,11 +9,12 @@ project(Les LANGUAGES C CXX)
 set(CMAKE_CXX_STANDARD 17)
 
 add_subdirectory(data_struct)
+add_subdirectory(OOP)
 
 # Добавление исполняемого файла
 add_executable(${PROJECT_NAME} main.cpp)
-target_link_libraries(${PROJECT_NAME} PRIVATE DataStruct)
-target_include_directories(${PROJECT_NAME} PRIVATE DataStruct)
+target_link_libraries(${PROJECT_NAME} PRIVATE DataStruct_object oop_object)
+target_include_directories(${PROJECT_NAME} PRIVATE DataStruct_object oop_object)
 
 file(COPY ${CMAKE_SOURCE_DIR}/test.txt DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/)
 
