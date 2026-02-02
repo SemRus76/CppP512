@@ -31,19 +31,29 @@ int main() // Это главная функция программы - Ее н�
     // setConsoleOutputCP(1251);
 
 
-    Example obj1, obj2;
-    Example obj3 = Example("name");
-    // Example obj4 = Example(obj3);
-    Example* obj_ptr = new Example();
-    Example* obj_n_ptr = move(obj_ptr);
+    Example obj1("Hello", 2), obj2 ("World", 4);
+    Example obj3 = obj1 + obj2;
 
-    obj1.setName("Hello");
-    obj2.setName("World");
+    !obj1;
+    obj1++;
+    ++obj1;
+    // obj1 + obj2;
 
+    //       std::string
     cout << obj1.getName() << " " << obj2.getName() << endl;
+    cout << (obj1 + obj2).getName() << endl;
 
-    // cout << obj1._name << " " << obj2._name << endl;
-    delete obj_ptr;
+    cout << obj1 << endl;
+    cout << obj1[2] << " " << obj1.at(2) << endl;
+
+    // cout << Example::KeepAliveSettingsFile << endl;
+    cout << obj1.KeepAliveSettingsFile << endl;
+    obj2.KeepAliveSettingsFile = "Hello World";
+    cout << obj1.KeepAliveSettingsFile << endl;
+
+    cout << obj3.ClassName() << endl;
+    cout << Example::ClassName() << endl;
+
     return 0;
 }
 
