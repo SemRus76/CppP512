@@ -191,7 +191,7 @@ public:
     Example& operator%= (const Example&); // Получить остаток и приравнять
 
     friend std::istream& operator>> (std::istream& stream, Example& object);
-    friend std::ostream& operator<< (std::ostream& stream, Example& object);
+    friend std::ostream& operator<< (std::ostream& stream, Example object);
 
     int& operator[] (const int& index); // Индексатор - НЕ безопастно - Быстрее
     int& at         (const int& index); // Индексатор - Безопастно    - Медленнее
