@@ -193,7 +193,7 @@ Example Example::operator--(int)
     return cry;
 }
 
-std::istream& operator>> (std::istream& stream, Example object)
+std::istream& operator>> (std::istream& stream, Example& object)
 {
     stream >> object._name;
     stream >> object._number;

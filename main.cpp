@@ -8,6 +8,8 @@
 #include <math.h>
 #include <termios.h>
 #include <unistd.h>
+#include <vector>
+#include <list>
 // #include <Windows.h> // Для русского языка
 // #include <conio.h>
 // #include <consoleapi2.h>
@@ -19,28 +21,17 @@
 #include "set.h"
 
 #include "OOP/example.h"
+#include "OOP/template_class.h"
 
 #define STR_HELLO "Hello World"
 
-/*
- * Задание
- *
- *  В математике существует особый класс чисел, называемый Комплексное множество чисел.
- *  Каждое число из этого множества состоит из пары чисел - real и image - реальное и мнимое
- *
- *  Соответственно существует прописанные способы взаимодействия с такими числа - как проводить операции сложения, вычитания, деления и умножения таких чисел.
- *
- *  Задача - необходимо реализовать класс, который будет представлять собой Комплексное число и будет позволять проводить простые математичекие операции с такими числами, а так же с целыми и дробными, Вводить и Выводить их на консоль, сравнивать между собой
- *
- *  Пример:
- *
- *  (2 + 1i) + (4 - 5i)
- *
- */
-
-
-
 using namespace std;
+
+template <typename Type1, typename Type2>
+Type1 summer (const Type1& First, const Type2& Second)
+{
+    return First + Second;
+}
 
 int main() // Это главная функция программы - Ее начало и ее конец
 {
@@ -48,29 +39,12 @@ int main() // Это главная функция программы - Ее н�
     // setConsoleCP(1251);
     // setConsoleOutputCP(1251);
 
+    cout << summer(1,2) << endl;
+    cout << summer(2.1f, 5.5f) << endl;
+    cout << summer(2.1f, 2) << endl;
 
-    Example obj1("Hello", 2), obj2 ("World", 4);
-    Example obj3 = obj1 + obj2;
-
-    !obj1;
-    obj1++;
-    ++obj1;
-    // obj1 + obj2;
-
-    //       std::string
-    cout << obj1.getName() << " " << obj2.getName() << endl;
-    cout << obj1 + obj2 << endl;
-
-    cout << obj1 << endl;
-    cout << obj1[2] << " " << obj1.at(2) << endl;
-
-    // cout << Example::KeepAliveSettingsFile << endl;
-    cout << obj1.KeepAliveSettingsFile << endl;
-    obj2.KeepAliveSettingsFile = "Hello World";
-    cout << obj1.KeepAliveSettingsFile << endl;
-
-    cout << obj3.ClassName() << endl;
-    cout << Example::ClassName() << endl;
+    TemplateClass<int> obj (2);
+    cout << obj.getValue() << endl;
 
     return 0;
 }
