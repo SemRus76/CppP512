@@ -22,6 +22,7 @@
 
 #include "OOP/example.h"
 #include "OOP/template_class.h"
+#include "OOP/inheritance.h"
 
 #define STR_HELLO "Hello World"
 
@@ -45,6 +46,24 @@ int main() // Это главная функция программы - Ее н�
 
     TemplateClass<int> obj (2);
     cout << obj.getValue() << endl;
+
+    cout << "-=========================-" << endl;
+
+    Parent pObj;
+    // cin >> pObj;
+    pObj.setValue(5);
+
+    cout << pObj << endl;
+
+    Inherit iObj;
+
+    iObj.setImgn(4);
+    iObj.setReal(7);
+
+    cout << iObj << endl;
+
+    iObj.sayHello();
+
 
     return 0;
 }

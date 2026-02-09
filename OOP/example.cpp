@@ -200,7 +200,7 @@ std::istream& operator>> (std::istream& stream, Example& object)
     return stream;
 }
 
-std::ostream& operator<< (std::ostream& stream, Example object)
+std::ostream& operator<< (std::ostream& stream, const Example& object)
 {
     stream << object._name << " " << object._number;
     return stream;

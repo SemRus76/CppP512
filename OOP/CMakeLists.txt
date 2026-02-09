@@ -14,6 +14,8 @@ set (oop_source
 add_library(oop_object OBJECT
             ${oop_header}
             ${oop_source}
+            inheritance.h inheritance.cpp
+            common.h
             )
 
 target_include_directories(oop_object PUBLIC .
