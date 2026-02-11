@@ -40,30 +40,14 @@ int main() // Это главная функция программы - Ее н�
     // setConsoleCP(1251);
     // setConsoleOutputCP(1251);
 
-    cout << summer(1,2) << endl;
-    cout << summer(2.1f, 5.5f) << endl;
-    cout << summer(2.1f, 2) << endl;
+    Parent* obj = new Inherit();
 
-    TemplateClass<int> obj (2);
-    cout << obj.getValue() << endl;
+    Inherit* iObj = static_cast<Inherit*>(obj);
 
-    cout << "-=========================-" << endl;
+    cout << obj->getName() << endl;
+    cout << iObj->getName() << endl;
 
-    Parent pObj;
-    // cin >> pObj;
-    pObj.setValue(5);
-
-    cout << pObj << endl;
-
-    Inherit iObj;
-
-    iObj.setImgn(4);
-    iObj.setReal(7);
-
-    cout << iObj << endl;
-
-    iObj.sayHello();
-
+    delete obj;
 
     return 0;
 }

@@ -1,11 +1,15 @@
 #include "inheritance.h"
 
-
+using namespace std;
 Parent::Parent()
-{}
+{
+    cout << "Создан объект Parent" << endl;
+}
 
 Parent::~Parent()
-{}
+{
+    cout << "Удален объект Parent" << endl;
+}
 
 Parent::Parent(const double& value)
 {
@@ -23,6 +27,11 @@ bool Parent::setValue(const int& value)
         return false;
     _value = value;
     return true;
+}
+
+string Parent::getName()
+{
+    return std::string("Parent");
 }
 
 void Parent::sayHello()
@@ -49,10 +58,14 @@ std::ostream& operator<< (std::ostream& stream, const Parent& object)
 
 
 Inherit::Inherit()
-{}
+{
+    cout << "Создан объект Inherit" << endl;
+}
 
 Inherit::~Inherit()
-{}
+{
+    cout << "Удален объект Inherit" << endl;
+}
 
 Inherit::Inherit(const double& real, const double& imagen) : Parent(real)
 {
@@ -78,6 +91,11 @@ bool Inherit::setImgn(const int& value)
 {
     _imgn = value;
     return true;
+}
+
+string Inherit::getName()
+{
+    return std::string("Inherit");
 }
 
 std::istream& operator>> (std::istream& stream, Inherit& object)
