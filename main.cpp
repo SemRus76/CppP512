@@ -24,15 +24,12 @@
 #include "OOP/template_class.h"
 #include "OOP/inheritance.h"
 
+#include "abastract_class.h"
+#include "multiple_inheritce.h"
+
 #define STR_HELLO "Hello World"
 
 using namespace std;
-
-template <typename Type1, typename Type2>
-Type1 summer (const Type1& First, const Type2& Second)
-{
-    return First + Second;
-}
 
 int main() // Это главная функция программы - Ее начало и ее конец
 {
@@ -40,14 +37,38 @@ int main() // Это главная функция программы - Ее н�
     // setConsoleCP(1251);
     // setConsoleOutputCP(1251);
 
-    Parent* obj = new Inherit();
+    Weapon* gun = new MachinGun();
+    gun->fire();
+    gun->fire();
+    gun->fire();
+    gun->fire();
+    gun->fire();
+    gun->fire();
+    gun->fire();
+    delete gun;
+    gun = new SniperGun();
+    gun->fire();
+    gun->fire();
+    gun->fire();
+    gun->fire();
+    gun->reload();
+    gun->fire();
+    gun->fire();
+    delete gun;
+    gun = new Pistol();
+    gun->fire();
+    gun->fire();
+    gun->fire();
+    gun->fire();
+    gun->fire();
+    delete gun;
+    cout << "-===================-" << endl;
+    // gun = new Weapon(1);
+    // gun->fire();
+    // gun->fire();
 
-    Inherit* iObj = static_cast<Inherit*>(obj);
-
-    cout << obj->getName() << endl;
-    cout << iObj->getName() << endl;
-
-    delete obj;
+    Third obj;
+    obj.sayDIE();
 
     return 0;
 }
