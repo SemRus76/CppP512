@@ -36,6 +36,9 @@ int main() // Это главная функция программы - Ее н�
     // setlocale(LC_ALL, "RUS");
     // setConsoleCP(1251);
     // setConsoleOutputCP(1251);
+    Example obj1;
+    cout << obj1;
+
 
     Weapon* gun = new MachinGun();
     gun->fire();

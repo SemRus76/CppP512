@@ -30,3 +30,8 @@ private:
     Type _value;
 };
 
+template<typename Type>
+class SecondTemplate : public TemplateClass<int>
+{
+
+};

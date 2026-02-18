@@ -81,6 +81,13 @@ Example& Example::operator--()
     return *this;
 }
 
+Example Example::operator--(int)
+{
+    Example cry(_name, _number);
+    --_number;
+    return cry;
+}
+
 bool Example::operator==(const Example& value) const
 {
     return _number == value._number;
@@ -184,13 +191,6 @@ int& Example::at(const int& index)
         return val;
     }
     return _vec[index];
-}
-
-Example Example::operator--(int)
-{
-    Example cry(_name, _number);
-    --_number;
-    return cry;
 }
 
 std::istream& operator>> (std::istream& stream, Example& object)
