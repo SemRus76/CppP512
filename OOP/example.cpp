@@ -30,11 +30,10 @@ Example::Example(const Example& object)
     // cout << "Вызыван lvalue Конструктор копирования" << endl;
 }
 
-Example& Example::operator=(const Example& value)
+void Example::operator=(const Example& value)
 {
     _name = value._name;
     _number = value._number;
-    return *this;
 }
 
 Example::Example(const Example&& object)
@@ -44,11 +43,10 @@ Example::Example(const Example&& object)
     // cout << "Вызыван rvalue Конструктор копирования" << endl;
 }
 
-Example& Example::operator=(const Example&& value)
+void Example::operator=(const Example&& value)
 {
     _name = value._name;
     _number = value._number;
-    return *this;
 }
 
 Example::~Example()

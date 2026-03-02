@@ -158,9 +158,9 @@ public:
      Example             (const std::string& name                   )          ; // Делегирующий Конструктор
      Example             (const std::string& name, const int& number)          ; // Конструктор с параметром
      Example             (const Example&                            )          ; // Конструктор копирования на lvalue
-     Example& operator=  (const Example&                            )          ;
+     void     operator=  (const Example&                            )          ;
      Example             (const Example&&                           )          ; // Конструктор копирования на rvalue
-     Example& operator=  (const Example&&                           )          ;
+     void     operator=  (const Example&&                           )          ;
     ~Example             (                                          )          ; // Деструктор класса
 
     // Операторы
