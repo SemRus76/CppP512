@@ -5,6 +5,7 @@ set (payment_header
             payment_service/user.h
             payment_service/payment.h
             payment_service/payment_service.h
+            payment_service/transaction_manager.h
 
 )
 
@@ -12,13 +13,15 @@ set (payment_source
             payment_service/user.cpp
             payment_service/payment_service.cpp
             payment_service/payment.cpp
+            payment_service/transaction_manager.cpp
 
 )
 
 
-add_library(payment_service OBJECT
+add_library(payment_service STATIC
             ${payment_header}
             ${payment_source}
+
             )
 
 target_include_directories(payment_service PUBLIC .
@@ -38,7 +41,7 @@ add_library(practics_object OBJECT
             ${practics_header}
             ${practics_source}
             )
-target_link_libraries(practics_object PRIVATE
+target_link_libraries(practics_object PUBLIC
                         payment_service)
 target_include_directories(practics_object PUBLIC .
                              ${practics_header}

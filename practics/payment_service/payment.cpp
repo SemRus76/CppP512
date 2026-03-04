@@ -14,6 +14,16 @@ User::~User()
 
 }
 
+void User::addAmount(const uint64_t& amount)
+{
+    _balance += amount;
+}
+
+uint64_t User::getId()
+{
+    return _id;
+}
+
 Payment::Payment(const uint64_t& amount, const User& sender) :
     _sender(sender), _amount(amount), _status(PaymentStatus::Pending)
 {}
@@ -23,6 +33,7 @@ Payment::~Payment()
 
 void Payment::setSuccess()
 {
+    _sender.addAmount(_amount);
     _status = PaymentStatus::Success;
 }
 

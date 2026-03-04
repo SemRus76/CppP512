@@ -14,8 +14,8 @@ add_subdirectory(OOP)
 
 # Добавление исполняемого файла
 add_executable(${PROJECT_NAME} main.cpp)
-target_link_libraries(${PROJECT_NAME} PRIVATE DataStruct_object oop_object practics_object)
-target_include_directories(${PROJECT_NAME} PRIVATE DataStruct_object oop_object practics_object)
+target_link_libraries(${PROJECT_NAME} PUBLIC DataStruct_object oop_object practics_object)
+target_include_directories(${PROJECT_NAME} PUBLIC DataStruct_object oop_object practics_object)
 
 file(COPY ${CMAKE_SOURCE_DIR}/test.txt DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/)
 

@@ -16,9 +16,11 @@ bool YandexProcessor::process(Payment& payment)
     {
         payment.setFailed();
         cout << "Провал платежа YandexProcessor" << endl;
+        return false;
     }
     payment.setSuccess();
     cout << "Успех платежа YandexProcessor" << endl;
+    return true;
 }
 
 OzonProcessor::OzonProcessor()
@@ -34,9 +36,11 @@ bool OzonProcessor::process(Payment& payment)
     {
         payment.setFailed();
         cout << "Провал платежа OzonProcessor" << endl;
+        return false;
     }
     payment.setSuccess();
     cout << "Успех платежа OzonProcessor" << endl;
+    return true;
 }
 
 SberBankProcessor::SberBankProcessor()
@@ -52,9 +56,11 @@ bool SberBankProcessor::process(Payment& payment)
     {
         payment.setFailed();
         cout << "Провал платежа SberBankProcessor" << endl;
+        return false;
     }
     payment.setSuccess();
     cout << "Успех платежа SberBankProcessor" << endl;
+    return true;
 }
 
 }

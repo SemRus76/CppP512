@@ -14,8 +14,11 @@ public:
      User(const uint64_t& id, const std::string& name);
     ~User();
 
+    void addAmount(const uint64_t& amount);
+    uint64_t getId();
+
 private:
-    DELETE_COPY_CONSTRUCTOR(User)
+    // DELETE_COPY_CONSTRUCTOR(User)
 
     uint64_t    _id       = {0};
     std::string _nickName = {"user"};
@@ -46,8 +49,8 @@ public:
 
 private:
 
-    PaymentStatus         _status;
-    uint64_t              _amount; // unsigned long long int
+    PaymentStatus         _status = {};
+    uint64_t              _amount = {1}; // unsigned long long int
     payment_service::User _sender;
 };
 

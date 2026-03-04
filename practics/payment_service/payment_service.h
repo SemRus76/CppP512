@@ -18,7 +18,6 @@ public:
 
 private:
     DELETE_COPY_CONSTRUCTOR(PaymentService)
-
 };
 
 // класс YandexProcessor - Определяет интерфейс для Yandex

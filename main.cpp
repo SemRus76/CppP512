@@ -119,13 +119,19 @@ using namespace std;
  *
 */
 
+#include "transaction_manager.h"
+
 int main() // Это главная функция программы - Ее начало и ее конец
 {
     // setlocale(LC_ALL, "RUS");
     // setConsoleCP(1251);
     // setConsoleOutputCP(1251);
 
-
+    payment_service::TransactionManager manager;
+    manager.addUser({0, "Дементий"});
+    payment_service::PaymentService* service = new payment_service::OzonProcessor();
+    manager.execute_payment(0, service, 5000);
+    delete service;
 
     return 0;
 }
