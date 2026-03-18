@@ -28,6 +28,9 @@
 #include <array>
 #include <list>
 #include <forward_list>
+#include <deque>
+#include <stack>
+#include <queue>
 
 using namespace std;
 // Пометка к потокам - Взаимная блокировка, Deadlock, Гонка, move-семантика
@@ -91,6 +94,53 @@ using namespace std;
  *
  * ВАЖНО - list - это список, разбросанный по памяти, а значит любая операция поиска элемента в нем и прохода по элементам является затратной
  *
+ */
+
+/*
+ * deque<Type> - это STL класс, организующий данные в виде списка векторов
+ *
+ * Хедер:
+ *    #include <deque>
+ *
+ * Синтаксис объявления:
+ *    std::deque<Type> deque;
+ *
+ *  ВАЖНО - deque - это список векторов, следовательно добавление элемента в начало и конец всей структуры будет происходить быстро, а вот в середину deque будет добавлять довольно дорого
+ *
+ */
+
+/*
+ * Stack и Queue
+ *
+ *  ВАЖНО - Сами по себе Stack и Queue - НЕ ЯВЛЯЮТСЯ структурами данных, они используют другие последовательные структуры для хранения информации - Vector, List, Deque
+ *
+ *  Stack - это структура данных, работающая по принципу LIFO (Last In First Out) - Последний Пришел Первый Ушел
+ *
+ *  Хедер:
+ *      #include <stack>
+ *
+ *  Синтаксис объявления:
+ *      std::stack<Type, Sequence = std::deque<Type>>
+ *
+ *
+ *  Queue - это структура данных, работает по принципу FIFO (First In First Out) - Первый Пришел Первый Ушел
+ *      Очередь можно собрать на List и Deque, но не на Vector
+ *
+ *  Хедер:
+ *      #include <queue>
+ *
+ *  Синтаксис объявления:
+ *      std::queue<Type, Sequence = std::deque<Type>>
+ *
+ *
+ *  Priority Queue - это структура данных, работающая по прирнципу FIFO, НО с изменением позиции элементов внутри очереди в зависимости от их преоритета.
+ *      Очередь c приоритетом можно собрать на Vector и Deque, но не на List
+ *
+ *  Хедер:
+ *      #include <queue>
+ *
+ *  Синтаксис объявления:
+ *      std::priority_queue<Type, Sequence = std::vector<Type>>
  */
 
 /*
@@ -207,133 +257,94 @@ int main() // Это главная функция программы - Ее н�
     // setlocale(LC_ALL, "RUS");
     // setConsoleCP(1251);
     // setConsoleOutputCP(1251);
-    //- vector
-    std::vector<int> vec;
 
-    // vec.resize(20);
-    // vec.reserve(20);
+    std::deque<int> deq;
 
-    vec.push_back(1);
-    vec.push_back(2);
-    vec.push_back(3);
-    vec.pop_back();
-    vec.push_back(4);
-    vec.push_back(5);
-    vec.push_back(6);
-    vec.push_back(7);
-    vec.pop_back();
-    vec.push_back(8);
-    vec.push_back(9);
-    vec.push_back(10);
-    vec.push_back(10);
-    vec.insert(vec.begin(), 0);
-    vec.erase(vec.end());
+    deq.push_back(0);
+    deq.push_front(1);
+    deq.emplace_back(10);
+    deq.emplace_front(11);
+    deq.emplace(deq.end(), 20);
+    deq.insert(deq.begin(), 21);
+    deq.push_back(2);
+    deq.push_back(3);
+    deq.push_front(4);
+    deq.push_back(5);
 
-    cout << "Capacity - " << vec.capacity() << endl;
-    cout << "Size - " << vec.size() << endl;
-    cout << "Дополнительное место - " << vec.capacity() - vec.size() << endl;
-    cout << "-================-" << endl;
+    deq.pop_back();
+    deq.pop_front();
+    deq.erase(deq.end());
 
-    vec.shrink_to_fit();
-
-    cout << "Capacity - " << vec.capacity() << endl;
-    cout << "Size - " << vec.size() << endl;
-    cout << "Дополнительное место - " << vec.capacity() - vec.size() << endl;
-    cout << "-================-" << endl;
-
-    for (int i = 0; i < vec.size(); ++i)
-        cout << vec[i] << " ";
-    cout << endl << "-================-" << endl;
-
-    //- array
-    std::array<int, 10> arr;
-    arr.fill(0);
-
-    for (int i = 0; i < arr.size(); ++i)
-        cout << arr[i] << " ";
-    cout << endl << "-================-" << endl;
-
-    //- Итераторы
-    auto iterat = vec.end();
-    for (auto iter = vec.begin(); iter != vec.end(); ++iter)
-    {
-        cout << *iter << " ";
-        *iter = 67;
-        if (*iter == 5)
-            iterat = iter;
-    }
-    if (iterat != vec.end())
-        vec.erase(iterat);
-    cout << *iterat << endl;
-
-    cout << endl << "-================-" << endl;
-
-    for (auto iter = vec.begin(); iter != vec.end(); ++iter)
-    {
-        cout << *iter << " ";
-    }
-    cout << endl << "-================-" << endl;
-
-    //- list
-    std::list<int> lst;
-    lst.push_back(1);
-    lst.push_front(2);
-    lst.emplace_back(3);
-    lst.emplace_front(4);
-    lst.insert(lst.begin(), 5);
-    lst.emplace(lst.begin(), 6);
-    lst.push_back(7);
-    lst.push_back(8);
-    lst.push_back(9);
-    lst.push_back(10);
-    lst.push_back(11);
-    // lst.splice();
-    // lst.merge();
-
-    for (auto iter = lst.begin(); iter != lst.end(); ++iter)
-    {
-        cout << *iter << " ";
-    }
-    cout << endl << "-================-" << endl;
-
-    lst.reverse();
-
-    for (auto iter = lst.begin(); iter != lst.end(); ++iter)
-    {
-        cout << *iter << " ";
-    }
-    cout << endl << "-================-" << endl;
-
-    std::forward_list<int> flst;
-
-    flst.push_front(4);
-    flst.emplace_front(10);
-    flst.emplace_after(++flst.begin(), 11);
-
-    for (auto iter = flst.begin(); iter != flst.end(); ++iter)
-    {
-        cout << *iter << " ";
-    }
-    cout << endl << "-================-" << endl;
-
-    std::string str = "Hello World";
-    for (auto& sign : str)
-    {
-        cout << sign << " ";
-    }
-    cout << endl << "-================-" << endl;
-
-    for (int& element : lst)
-    {
-        cout << element << " ";
-        ++element;
-    }
-    cout << endl << "-================-" << endl;
-    for (int& element : lst)
+    for (int& element : deq)
     {
         cout << element << " ";
     }
-    cout << endl << "-================-" << endl;
+    cout << endl << "-=============-" << endl;
+
+    for (int i = 0; i < deq.size(); ++i)
+    {
+        cout << deq[i] << " ";
+    }
+    cout << endl << "-=============-" << endl;
+
+    deq.shrink_to_fit();
+
+    // Stack Queue
+    std::stack<int> st;
+
+    st.emplace(0);
+    st.push(1);
+    st.push(2);
+    st.push(3);
+    st.push(4);
+    st.push(5);
+    st.push(6);
+    st.push(7);
+
+    for (int i = 0; !st.empty(); ++i)
+    {
+        cout << st.top() << " ";
+        st.pop();
+    }
+    cout << endl << "-=============-" << endl;
+
+    std::queue<int, std::list<int>> que;
+
+    que.emplace(0);
+    que.push(1);
+    que.push(2);
+    que.push(3);
+    que.push(4);
+    que.push(5);
+    que.push(6);
+
+    que.pop();
+
+    for (int i = 0; !que.empty(); ++i)
+    {
+        cout << que.front() << " ";
+        que.pop();
+    }
+    cout << endl << "-=============-" << endl;
+
+    std::priority_queue<int, std::vector<int>> pque;
+
+    pque.emplace(0);
+    pque.push(1);
+    pque.push(2);
+    pque.push(3);
+    pque.push(4);
+    pque.push(5);
+    pque.push(6);
+
+    pque.pop();
+
+    for (int i = 0; !pque.empty(); ++i)
+    {
+        cout << pque.top() << " ";
+        pque.pop();
+    }
+    cout << endl << "-=============-" << endl;
 
     return 0;
 }
