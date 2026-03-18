@@ -252,99 +252,44 @@ using namespace std;
  *      ВО-ВТОРЫХ - КАЖДЫЙ РАЗ вы будете КОПИРОВАТЬ полностью элемент в свою временную переменную.
  */
 
+/*
+ *  Первое задание:
+ *
+ *      Напишите функцию, которая принимает в себя одно число и возвращает контейнер, заполненный числами Фиббоначчи с 0 и до указнного
+ *          числа номера последовательности.
+ *
+ *      Выбор контейнера необходимо обосновать.
+ *
+ */
+
+/*
+ *  Второе задание:
+ *
+ *      На вход функции подается list из рандомных чисел от 0 до 1000
+ *      Необходимо вернуть очередь, состающую ТОЛЬКО из четных чисел этого списка
+ */
+
+/*
+ *  Третье задание:
+ *
+ *      На вход функции подается список из чисел. Кол-во чисел - нечетное. Список - НЕ сортированный.
+ *      Необходимо вернуть список, в котором на каждой четной позиции будет стоять число с четной позиции из
+ *      исходного, а на каждой нечетной - число с нечетной позиции. Четные числа должны быть в том же порядке, как
+ *      они идут в оригинальном списке, а нечетные числа должны быть в обратном порядке, от того как они идут в
+ *      оригинальном списке.
+ *
+ *      Пример:
+ *          {1,2,3,4,5,6,7,8,9} -> {9,2,7,4,5,6,3,8,1}
+ *          {1,6,4,8,2,9,5,3,7} -> {7,6,5,8,2,9,4,3,1}
+ *
+ */
+
 int main() // Это главная функция программы - Ее начало и ее конец
 {
     // setlocale(LC_ALL, "RUS");
     // setConsoleCP(1251);
     // setConsoleOutputCP(1251);
 
-    std::deque<int> deq;
-
-    deq.push_back(0);
-    deq.push_front(1);
-    deq.emplace_back(10);
-    deq.emplace_front(11);
-    deq.emplace(deq.end(), 20);
-    deq.insert(deq.begin(), 21);
-    deq.push_back(2);
-    deq.push_back(3);
-    deq.push_front(4);
-    deq.push_back(5);
-
-    deq.pop_back();
-    deq.pop_front();
-    deq.erase(deq.end());
-
-    for (int& element : deq)
-    {
-        cout << element << " ";
-    }
-    cout << endl << "-=============-" << endl;
-
-    for (int i = 0; i < deq.size(); ++i)
-    {
-        cout << deq[i] << " ";
-    }
-    cout << endl << "-=============-" << endl;
-
-    deq.shrink_to_fit();
-
-    // Stack Queue
-    std::stack<int> st;
-
-    st.emplace(0);
-    st.push(1);
-    st.push(2);
-    st.push(3);
-    st.push(4);
-    st.push(5);
-    st.push(6);
-    st.push(7);
-
-    for (int i = 0; !st.empty(); ++i)
-    {
-        cout << st.top() << " ";
-        st.pop();
-    }
-    cout << endl << "-=============-" << endl;
-
-    std::queue<int, std::list<int>> que;
-
-    que.emplace(0);
-    que.push(1);
-    que.push(2);
-    que.push(3);
-    que.push(4);
-    que.push(5);
-    que.push(6);
-
-    que.pop();
-
-    for (int i = 0; !que.empty(); ++i)
-    {
-        cout << que.front() << " ";
-        que.pop();
-    }
-    cout << endl << "-=============-" << endl;
-
-    std::priority_queue<int, std::vector<int>> pque;
-
-    pque.emplace(0);
-    pque.push(1);
-    pque.push(2);
-    pque.push(3);
-    pque.push(4);
-    pque.push(5);
-    pque.push(6);
-
-    pque.pop();
-
-    for (int i = 0; !pque.empty(); ++i)
-    {
-        cout << pque.top() << " ";
-        pque.pop();
-    }
-    cout << endl << "-=============-" << endl;
 
     return 0;
 }
