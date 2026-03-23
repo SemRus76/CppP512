@@ -31,6 +31,8 @@
 #include <deque>
 #include <stack>
 #include <queue>
+#include <set>
+#include <map>
 
 using namespace std;
 // Пометка к потокам - Взаимная блокировка, Deadlock, Гонка, move-семантика
@@ -144,6 +146,29 @@ using namespace std;
  */
 
 /*
+ * Set и Map
+ *
+ *  Хедер:
+ *
+ *  #include <set>
+ *  #include <map
+ *
+ *  Синтаксис:
+ *
+ *  std::set<int>
+ *  std::multiset<int>
+ *  std::map<int, std::string>
+ *  std::multimap<int>
+ *
+ *  ВАЖНО - Для любого типа, на котором пытается построится Set или Map (Key), ОБЯЗАНА быть перегружена функция operator <
+ *
+ *  ВАЖНО - Set и Map строят деревья УНИКАЛЬНЫХ элементов (Key в случае Map). Если элементы внутри контейнера (Key для Map) не уникальны - нужно использовать multiset или multimap
+ *
+ *  ВАЖНО - Multimap НЕ ИМЕЕТ операторов индексации и at, в отличии от Map
+ *
+ */
+
+/*
  * Методы контейнеров STL:
  *
  *  Работа с элементами (CRUD):
@@ -152,17 +177,28 @@ using namespace std;
  *      .push_back(<переменная>) - добавляет элемент <переменная> в КОНЕЦ контейнера
  *      .emplace_front(<переменная>) - добавляет элемент <переменная> в НАЧАЛО контейнера (перед первым элементом)
  *      .emplace_back(<переменная>) - добавляет элемент <переменная> в КОНЕЦ контейнера
+ *
  *      .emplace(<итератор>, <переменная>) - добавляет элемент <переменная> ПЕРЕД <итератор>
  *      .insert(<итератор>, <значение>) - добавляет элемент <значение> ПЕРЕД <итератор>
+ *          Такие перегрузки характерны для - Vector, Array, List, LinkedList, Deque
+ *
+ *      .insert_or_assign(std::pair<TypeKey, TypeValue>) - добавляет элемент pair ИЛИ, если такой КЛЮЧ уже есть,
+ *          то меняет ему значение, на указнное value
+ *      .try_emplace(<Ключ>, <Значение>) - добавляет элемент по <Ключ> со значением <Значение> и возвращает пару из Итератора на
+ *          созданный элемент и bool true. Если элемент с таким <Ключ> ЕСТЬ - возвращает end() и false
+ *
+ *      .emplace(<переменная>) - добавляет элемент <переменная>
+ *      .insert(<значение>) - добавляет элемент <значение>
+ *          Такие перегрузки характерны для - Set, Map
  *
  *      .pop_front() - удаляет первый элемент из контейнера
  *      .pop_back() - удаляет последний элемент из контейнера
  *      .erase(<итератор>) - удаляет элемент, на который указывает <итератор>
  *
  *      .operator[] (<индекс>) - возвращает элемент с идексом <индекс> - НЕ безопастно
- *          Существует только в - vector, array
+ *          Существует только в - vector, array, map
  *      .at(<индекс>) - возвращает элемент с идексом <индекс> - Безопастно
- *          Существует только в - vector, array
+ *          Существует только в - vector, array, map
  *
  *      .front() - возвращает значение первого элемента
  *      .back() - возвращает значение последнего элемента
@@ -180,6 +216,11 @@ using namespace std;
  *      .empty() - вернет true, если контейнер пустой
  *
  *      .max_size() - вернет максимальное кол-во элементов для данного контейнера
+ *
+ *      .lower_bound(<переменная>) - вернет итератор на первый элемент со значением НЕ МЕНЬШИМ, чем <переменная>
+ *          Если такого нет - вернет end()
+ *      .upper_bound(<переменная>) - вернет итератор на первый элемент со значением БОЛЬШИМ, чем <переменная>
+ *          Если такого нет - вернет end()
  *
  *
  *
@@ -252,43 +293,108 @@ using namespace std;
  *      ВО-ВТОРЫХ - КАЖДЫЙ РАЗ вы будете КОПИРОВАТЬ полностью элемент в свою временную переменную.
  */
 
-/*
- *  Первое задание:
- *
- *      Напишите функцию, которая принимает в себя одно число и возвращает контейнер, заполненный числами Фиббоначчи с 0 и до указнного
- *          числа номера последовательности.
- *
- *      Выбор контейнера необходимо обосновать.
- *
- */
-
-/*
- *  Второе задание:
- *
- *      На вход функции подается list из рандомных чисел от 0 до 1000
- *      Необходимо вернуть очередь, состающую ТОЛЬКО из четных чисел этого списка
- */
-
-/*
- *  Третье задание:
- *
- *      На вход функции подается список из чисел. Кол-во чисел - нечетное. Список - НЕ сортированный.
- *      Необходимо вернуть список, в котором на каждой четной позиции будет стоять число с четной позиции из
- *      исходного, а на каждой нечетной - число с нечетной позиции. Четные числа должны быть в том же порядке, как
- *      они идут в оригинальном списке, а нечетные числа должны быть в обратном порядке, от того как они идут в
- *      оригинальном списке.
- *
- *      Пример:
- *          {1,2,3,4,5,6,7,8,9} -> {9,2,7,4,5,6,3,8,1}
- *          {1,6,4,8,2,9,5,3,7} -> {7,6,5,8,2,9,4,3,1}
- *
- */
-
 int main() // Это главная функция программы - Ее начало и ее конец
 {
     // setlocale(LC_ALL, "RUS");
     // setConsoleCP(1251);
     // setConsoleOutputCP(1251);
+
+    std::set<int> mySet;
+
+    mySet.insert(1);
+    std::pair<std::set<int>::iterator, bool> result = mySet.emplace(5);
+
+    if (result.second)
+        cout << "Добавили пятерку" << endl;
+    result = mySet.emplace(5);
+
+    if (!result.second)
+        cout << "Нельзя добавить пятерку потому что она уже есть в Set" << endl;
+
+    mySet.emplace(2);
+    mySet.emplace(7);
+    mySet.emplace(6);
+    mySet.emplace(3);
+    mySet.emplace(8);
+    mySet.emplace(4);
+    mySet.emplace(9);
+
+    cout << endl << "-=====================-" << endl;
+
+    for (std::set<int>::iterator iter = mySet.begin(); iter != mySet.end(); ++iter)
+    {
+        cout << *iter << " ";
+    }
+    cout << endl << "-=====================-" << endl;
+
+    std::multiset<int> myMSet;
+
+    myMSet.emplace(2);
+    myMSet.emplace(2);
+    myMSet.emplace(2);
+    myMSet.emplace(7);
+    myMSet.emplace(7);
+    myMSet.emplace(7);
+    myMSet.emplace(7);
+    myMSet.emplace(7);
+    myMSet.emplace(7);
+    myMSet.emplace(7);
+    myMSet.emplace(7);
+    myMSet.emplace(7);
+    myMSet.emplace(7);
+    myMSet.emplace(7);
+    myMSet.emplace(7);
+    myMSet.emplace(6);
+    myMSet.emplace(6);
+    myMSet.emplace(6);
+    myMSet.emplace(6);
+    myMSet.emplace(3);
+    myMSet.emplace(8);
+    myMSet.emplace(8);
+    myMSet.emplace(8);
+    myMSet.emplace(8);
+    myMSet.emplace(8);
+    myMSet.emplace(4);
+    myMSet.emplace(9);
+
+    for (const int& element : myMSet)
+    {
+        cout << element << " ";
+    }
+    cout << endl << "-=====================-" << endl;
+
+    std::pair<std::string, int> pr = std::make_pair("Первый", 1);
+
+    cout << pr.first << " = " << pr.second;
+    cout << endl << "-=====================-" << endl;
+
+    std::map<int, std::string> myMap;
+
+
+    myMap.insert(std::make_pair(2, "Два"));
+    myMap.insert(std::make_pair(3, "Три"));
+    myMap.insert(std::make_pair(1, "Один"));
+    myMap.emplace(4, "Четыре");
+    myMap.emplace(8, "Восемь");
+    myMap.emplace(6, "Шесть");
+    myMap.emplace(7, "Семь");
+    myMap.emplace(5, "Пять");
+
+
+    for (auto iter = myMap.begin(); iter != myMap.end(); ++iter)
+    {
+        cout << iter->first << " - " << iter->second << endl;
+    }
+    cout << endl << "-=====================-" << endl;
+
+    for (const auto& [key, value] : myMap)
+    {
+        cout << key << " - " << value << endl;
+    }
+    cout << endl << "-=====================-" << endl;
+
+    std::multimap<int, std::string> myMMap;
+
 
 
     return 0;
