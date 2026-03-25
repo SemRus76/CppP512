@@ -33,6 +33,10 @@
 #include <queue>
 #include <set>
 #include <map>
+#include <unordered_set>
+#include <unordered_map>
+
+#include <functional>
 
 using namespace std;
 // Пометка к потокам - Взаимная блокировка, Deadlock, Гонка, move-семантика
@@ -155,16 +159,46 @@ using namespace std;
  *
  *  Синтаксис:
  *
- *  std::set<int>
- *  std::multiset<int>
- *  std::map<int, std::string>
- *  std::multimap<int>
+ *  std::set<Type>
+ *  std::multiset<Type>
+ *  std::map<Type, Type>
+ *  std::multimap<Type, Type>
  *
  *  ВАЖНО - Для любого типа, на котором пытается построится Set или Map (Key), ОБЯЗАНА быть перегружена функция operator <
  *
  *  ВАЖНО - Set и Map строят деревья УНИКАЛЬНЫХ элементов (Key в случае Map). Если элементы внутри контейнера (Key для Map) не уникальны - нужно использовать multiset или multimap
  *
  *  ВАЖНО - Multimap НЕ ИМЕЕТ операторов индексации и at, в отличии от Map
+ *
+ */
+
+/*
+ * Unoredered Set и Unordered Map
+ *
+ * Хедер:
+ *
+ *  #include <unordered_set>
+ *  #include <unordered_map>
+ *
+ * Синтаксис:
+ *
+ *  std::unordered_set<Type>
+ *  std::unordered_map<Type, Type>
+ *
+ *  ВАЖНО - Type в unordered_set и unordered_map (Key) обязаны иметь hash функции для работы контейнеров
+ *
+ */
+
+/*
+ * String
+ *
+ * Хедер:
+ *
+ *  #include <string>
+ *
+ * Синтаксис:
+ *
+ *  std::string
  *
  */
 
@@ -293,109 +327,125 @@ using namespace std;
  *      ВО-ВТОРЫХ - КАЖДЫЙ РАЗ вы будете КОПИРОВАТЬ полностью элемент в свою временную переменную.
  */
 
+/*
+ * Указатели на функции
+ *
+ *  <тип возращаемого значения> (*<имя перменной>)(<параметры>);
+ *
+ *  Указатель на функцию - это указатель, позволяющий вызывать функцию, на которую он указывает, из любого места своего существования (в том числе если передать функцию на вход другой функции).
+ *
+ *  Лямбда-функции aka Лямбда-выражения aka Анонимные функции
+ *
+ *  АРХИВАЖНО - Использование λ-функций НАПРОЧЬ убивает отладку кода, так как последовательность выполнения становится просто максимально неочевидной. Поэтому КРАЙНЕ НЕРЕКОМЕНДУЕТСЯ использовать эти функции в большом количестве, особенно за границами библиотеки алгоритмов.
+ *
+ *      Лямбда-функции - это функции, не имеющие имени и описывающиеся в конкретном месте использования.
+ *
+ *  Синтаксис:
+ *
+ *      [<контекст>](<параметры>){<тело функции>};
+ *      [](){};
+ *
+ *  Контекст - это особая механика Лямбда-выражений, смысл которой заключается в возможности захватить внутрь себя переменные из того места, где эта функция создается. По-умолчанию ВЕСЬ КОНТЕКСТ захватывается ПО ЗНАЧЕНИЮ
+ *
+ *  Контекстно можно захватить следующее:
+ *
+ *      [&] - захватить ВСЕ переменные по ссылке
+ *      [*] - захватить ВСЕ переменные по указателю
+ *      [this] - захватить объект, когда лямбда внутри класса
+ *          ВАЖНО - При захвате объекта класса лямбдой, последняя становится ФУНКТОРОМ класса
+ *
+ *
+ */
+
+void func (std::function<int()> function)
+{
+    function();
+}
+
 int main() // Это главная функция программы - Ее начало и ее конец
 {
     // setlocale(LC_ALL, "RUS");
     // setConsoleCP(1251);
     // setConsoleOutputCP(1251);
 
-    std::set<int> mySet;
-
-    mySet.insert(1);
-    std::pair<std::set<int>::iterator, bool> result = mySet.emplace(5);
-
-    if (result.second)
-        cout << "Добавили пятерку" << endl;
-    result = mySet.emplace(5);
-
-    if (!result.second)
-        cout << "Нельзя добавить пятерку потому что она уже есть в Set" << endl;
-
-    mySet.emplace(2);
-    mySet.emplace(7);
-    mySet.emplace(6);
-    mySet.emplace(3);
-    mySet.emplace(8);
-    mySet.emplace(4);
-    mySet.emplace(9);
-
-    cout << endl << "-=====================-" << endl;
-
-    for (std::set<int>::iterator iter = mySet.begin(); iter != mySet.end(); ++iter)
     {
-        cout << *iter << " ";
+        std::unordered_set<int> _myUSet;
+
+        _myUSet.emplace(1);
+        _myUSet.emplace(2);
+        _myUSet.emplace(3);
+        _myUSet.emplace(4);
+        _myUSet.emplace(5);
+        _myUSet.emplace(6);
+        _myUSet.emplace(7);
+        _myUSet.emplace(8);
+        _myUSet.emplace(9);
+        _myUSet.emplace(10);
+        _myUSet.emplace(15);
+        _myUSet.emplace(20);
+        _myUSet.emplace(25);
+        _myUSet.emplace(55);
+        _myUSet.emplace(155);
+
+        for (auto iter = _myUSet.begin(); iter != _myUSet.end(); ++iter)
+            cout << *iter << " ";
+        cout << endl << "-================-" << endl;
+
+        int number = 99;
+        cout << (_myUSet.find(number) == _myUSet.end() ? "Не существует" : to_string(*_myUSet.find(number))) << endl;
+        cout << endl << "-================-" << endl;
+
+        cout << _myUSet.bucket(1) << " " << _myUSet.bucket(5) << " " << _myUSet.bucket(10) << " " << _myUSet.bucket(15) << endl;
+        cout << _myUSet.bucket_count() << endl;
+        cout << _myUSet.load_factor() << endl;
+        cout << endl << "-================-" << endl;
+
+        _myUSet.erase(25);
+        for (auto iter = _myUSet.begin(); iter != _myUSet.end(); ++iter)
+            cout << *iter << " ";
+        cout << endl << "-================-" << endl;
     }
-    cout << endl << "-=====================-" << endl;
 
-    std::multiset<int> myMSet;
-
-    myMSet.emplace(2);
-    myMSet.emplace(2);
-    myMSet.emplace(2);
-    myMSet.emplace(7);
-    myMSet.emplace(7);
-    myMSet.emplace(7);
-    myMSet.emplace(7);
-    myMSet.emplace(7);
-    myMSet.emplace(7);
-    myMSet.emplace(7);
-    myMSet.emplace(7);
-    myMSet.emplace(7);
-    myMSet.emplace(7);
-    myMSet.emplace(7);
-    myMSet.emplace(7);
-    myMSet.emplace(6);
-    myMSet.emplace(6);
-    myMSet.emplace(6);
-    myMSet.emplace(6);
-    myMSet.emplace(3);
-    myMSet.emplace(8);
-    myMSet.emplace(8);
-    myMSet.emplace(8);
-    myMSet.emplace(8);
-    myMSet.emplace(8);
-    myMSet.emplace(4);
-    myMSet.emplace(9);
-
-    for (const int& element : myMSet)
     {
-        cout << element << " ";
+        std::unordered_map<int, std::string> _myUMap;
+
+        _myUMap[5] = "Hello World";
+
+        cout << _myUMap[5] << endl;
+        _myUMap.emplace(1, "Один");
+        _myUMap.emplace(2, "Два");
+        _myUMap.emplace(3, "Три");
+        _myUMap.emplace(4, "Четыре");
+        _myUMap.emplace(6, "Шесть");
+        _myUMap.emplace(7, "Семь");
+        _myUMap.emplace(8, "Восемь");
+
+        for (auto iter = _myUMap.begin(); iter != _myUMap.end(); ++iter)
+            cout << iter->first << " - " << iter->second << endl;
+        cout << endl << "-================-" << endl;
+
+        _myUMap[99];
+        for (auto iter = _myUMap.begin(); iter != _myUMap.end(); ++iter)
+            cout << iter->first << " - " << iter->second << endl;
+        cout << endl << "-================-" << endl;
+
+        cout << _myUMap.bucket_count() << endl;
+        cout << _myUMap.load_factor() << endl;
+        cout << endl << "-================-" << endl;
     }
-    cout << endl << "-=====================-" << endl;
 
-    std::pair<std::string, int> pr = std::make_pair("Первый", 1);
+    std::string str = "hello world";
 
-    cout << pr.first << " = " << pr.second;
-    cout << endl << "-=====================-" << endl;
+    for (char& sign : str)
+        cout << sign;
+    cout << endl;
+    str[1] = 'P';
+    cout << str << endl;
+    cout << "-================================-" << endl;
 
-    std::map<int, std::string> myMap;
-
-
-    myMap.insert(std::make_pair(2, "Два"));
-    myMap.insert(std::make_pair(3, "Три"));
-    myMap.insert(std::make_pair(1, "Один"));
-    myMap.emplace(4, "Четыре");
-    myMap.emplace(8, "Восемь");
-    myMap.emplace(6, "Шесть");
-    myMap.emplace(7, "Семь");
-    myMap.emplace(5, "Пять");
-
-
-    for (auto iter = myMap.begin(); iter != myMap.end(); ++iter)
-    {
-        cout << iter->first << " - " << iter->second << endl;
-    }
-    cout << endl << "-=====================-" << endl;
-
-    for (const auto& [key, value] : myMap)
-    {
-        cout << key << " - " << value << endl;
-    }
-    cout << endl << "-=====================-" << endl;
-
-    std::multimap<int, std::string> myMMap;
-
-
+    std::string value = "Another";
+    func([&value](){cout << "Hello " << value << " World" << endl; return 0;});
+    // helloFunc();
 
     return 0;
 }

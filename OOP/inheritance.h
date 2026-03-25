@@ -93,7 +93,7 @@ public:
     static void sayHello();
 
 protected:
-    DELETE_COPY_CONSTRUCTOR(Parent)
+    // DELETE_COPY_CONSTRUCTOR(Parent)
 
     double _value;
 };
