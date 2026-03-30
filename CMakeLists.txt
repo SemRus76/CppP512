@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.26) # минимальная версия Cmake
+cmake_minimum_required(VERSION 4.2.1) # минимальная версия Cmake
 
 #set(CMAKE_BUILD_TYPE Relase)
 project(Les LANGUAGES C CXX)

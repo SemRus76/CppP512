@@ -37,6 +37,8 @@
 #include <unordered_map>
 
 #include <functional>
+#include <algorithm>
+#include <random>
 
 using namespace std;
 // Пометка к потокам - Взаимная блокировка, Deadlock, Гонка, move-семантика
@@ -357,10 +359,66 @@ using namespace std;
  *
  */
 
-void func (std::function<int()> function)
-{
-    function();
-}
+/*
+ * Algorithm
+ *
+ *  Библиотека Алгоритмов предоставляет набор стандартных методов и функций для работы с контейнерами - сортировки, упорядовачения, проверка на вхождение и так далее.
+ *
+ *  Минимально любой (верный с точки зрения логики) алгоритм поддерживается всеми контейнерами
+ *
+ *  Функция-предикат - это простая функция, которая возвращает bool значение
+ *
+ *  Компаратор - функция-предикат, которая сравнивает между собой два элемента и возвращает итог этого сравнения в виде bool
+ *
+ *   Минимально - std::<алгоритм>(<Контейнер>.begin(), <Контейнер>.end())
+ *          Максимальная -
+ *              std::<алгоритм>(<Контейнер>.begin(), <Контейнер>.end(),
+ *                  [](const <Type>& First, const <Type>& Second)
+ *                  {<Тело Компаратора>}
+ *                  )
+ *
+ *  Список алгоритмов:
+ *      Сортировка - std::sort
+ *      Проверка на сортированность - std::is_sorted
+ *
+ *      Поиск элемента - std::find
+ *          Синтаксис:
+ *              std::<алгоритм>(<Контейнер>.begin(), <Контейнер>.end(), <значение элемента>)
+ *          Возвращает итератор на ПЕРВОЕ вхождение элемента со <значение элемента>
+ *          ВАЖНО - в отсортированном контейнере работает быстрее и лучше, чем не в отсортированном
+ *      Поиск по соответствию - std::find_if
+ *      Поиск по НЕ соответствию - std::find_if_not
+ *          Синтаксис:
+ *              std::<алгоритм>(<Контейнер>.begin(), <Контейнер>.end(), <Предикат>)
+ *          Возвращает итератор на ПЕРВОЕ вхождение элемента удовлетворяющего <Предикату>
+ *
+ *      Выполнить действие - std::for_each(<Контейнер>.begin(), <Контейнер>.end(), <Унарная функция>)
+ *
+ *      Копирование - std::copy(<Контейнер>.begin(), <Контейнер>.end(), <Контейнер назначения>.begin())
+ *          ВАЖНО - Память в <Контейнер назначения> должна быть выделена ДО использования copy
+ *      Копировать с условием - std::copy_if(<Контейнер>.begin(), <Контейнер>.end(), <Контейнер назначения>.begin(), <Предикат>)
+ *          ВАЖНО - Память в <Контейнер назначения> должна быть выделена ДО использования copy_if
+ *      Кол-во элементов - std::count(<Контейнер>.begin(), <Контейнер>.end())
+ *      Кол-во элементов с условием - std::count_if(<Контейнер>.begin(), <Контейнер>.end(), <Предикат>)
+ *
+ *      Перемена местами - std::swap(<Контейнер первый>, <Контейнер второй>)
+ *          ВАЖНО - Может менять местами ТОЛЬКО контейнеры ОДНОГО ВИДА
+ *
+ *      Перемещение - std::move(<Контейнер>)
+ *          Вернет память <Контейнер> для присваивание в другой контейнер
+ *          ВАЖНО - <Контейнер> останется пустым
+ *
+ *      Удаление (без уменьшения размера) - std::remove(<Контейнер>.begin(), <Контейнер>.end(), <Значение>)
+ *      Удаление (без уменьшения размера) по условию -
+ *          std::remove_if(<Контейнер>.begin(), <Контейнер>.end(), <Предикат>)
+ *          ВАЖНО - remove и remove_if удаляют элементы, НО не меняют размер контейнера.
+ *              Изменение размера - задача программиста
+ *
+ *      Перемешивание - std::shuffle(<Контейнер>.begin(), <Контейнер>.end(), <RandomGenerator>)
+ *
+ */
+
+using namespace std;
 
 int main() // Это главная функция программы - Ее начало и ее конец
 {
@@ -368,84 +426,113 @@ int main() // Это главная функция программы - Ее н�
     // setConsoleCP(1251);
     // setConsoleOutputCP(1251);
 
+    vector<int> myVec = {1,3,5,7,9,2,4,6,8,10,12,11,14,13,16,15};
+
+    cout << endl << " -=================- " << endl;
+
+    for (const int& element : myVec)
+        cout << element << " ";
+    cout << endl << " -=================- " << endl;
+
+    auto SortFunc = [](const int& First , const int& Second)
     {
-        std::unordered_set<int> _myUSet;
+        return First < Second;
+    };
 
-        _myUSet.emplace(1);
-        _myUSet.emplace(2);
-        _myUSet.emplace(3);
-        _myUSet.emplace(4);
-        _myUSet.emplace(5);
-        _myUSet.emplace(6);
-        _myUSet.emplace(7);
-        _myUSet.emplace(8);
-        _myUSet.emplace(9);
-        _myUSet.emplace(10);
-        _myUSet.emplace(15);
-        _myUSet.emplace(20);
-        _myUSet.emplace(25);
-        _myUSet.emplace(55);
-        _myUSet.emplace(155);
+    std::sort(myVec.begin(), myVec.end(), SortFunc);
+    cout << (std::is_sorted(myVec.begin(), myVec.end()) ? "Отсортирован" : "Не Отсортирован") << endl;
 
-        for (auto iter = _myUSet.begin(); iter != _myUSet.end(); ++iter)
-            cout << *iter << " ";
-        cout << endl << "-================-" << endl;
+    for (const int& element : myVec)
+        cout << element << " ";
+    cout << endl << " -=================- " << endl;
 
-        int number = 99;
-        cout << (_myUSet.find(number) == _myUSet.end() ? "Не существует" : to_string(*_myUSet.find(number))) << endl;
-        cout << endl << "-================-" << endl;
+    auto findElement = std::find(myVec.begin(), myVec.end(), 11);
+    if (findElement != myVec.end())
+        cout << *findElement << endl;
+    else
+        cout << "Элемента не найдено" << endl;
 
-        cout << _myUSet.bucket(1) << " " << _myUSet.bucket(5) << " " << _myUSet.bucket(10) << " " << _myUSet.bucket(15) << endl;
-        cout << _myUSet.bucket_count() << endl;
-        cout << _myUSet.load_factor() << endl;
-        cout << endl << "-================-" << endl;
+    findElement = std::find_if(myVec.begin(), myVec.end(), [](const int& value){ return value == 10;});
+    if (findElement != myVec.end())
+        cout << *findElement << endl;
+    else
+        cout << "Элемента не найдено" << endl;
 
-        _myUSet.erase(25);
-        for (auto iter = _myUSet.begin(); iter != _myUSet.end(); ++iter)
-            cout << *iter << " ";
-        cout << endl << "-================-" << endl;
-    }
+    auto findElementR = std::find_if_not(myVec.begin(), myVec.end(),
+                                         [](const int& value){ return value % 3 != 0 || value % 5 != 0;});
+    if (findElementR != myVec.end())
+        cout << *findElementR << endl;
+    else
+        cout << "Элемента не найдено" << endl;
 
-    {
-        std::unordered_map<int, std::string> _myUMap;
+    // for_each(myVec.begin(), myVec.end(), [](int& value){ value *= 2;});
+    // for (int& element : myVec)
+    //     element *= 2;
 
-        _myUMap[5] = "Hello World";
+    for (const int& element : myVec)
+        cout << element << " ";
+    cout << endl << " -=================- " << endl;
 
-        cout << _myUMap[5] << endl;
-        _myUMap.emplace(1, "Один");
-        _myUMap.emplace(2, "Два");
-        _myUMap.emplace(3, "Три");
-        _myUMap.emplace(4, "Четыре");
-        _myUMap.emplace(6, "Шесть");
-        _myUMap.emplace(7, "Семь");
-        _myUMap.emplace(8, "Восемь");
+    std::vector<int> evenVec;
+    evenVec.resize(count_if(myVec.begin(), myVec.end(), [](int& value){return value % 2 == 0;}));
+    copy_if(myVec.begin(), myVec.end(), evenVec.begin(), [](int& value){return value % 2 == 0;});
 
-        for (auto iter = _myUMap.begin(); iter != _myUMap.end(); ++iter)
-            cout << iter->first << " - " << iter->second << endl;
-        cout << endl << "-================-" << endl;
+    for (const int& element : evenVec)
+        cout << element << " ";
+    cout << endl << " -=================- " << endl;
 
-        _myUMap[99];
-        for (auto iter = _myUMap.begin(); iter != _myUMap.end(); ++iter)
-            cout << iter->first << " - " << iter->second << endl;
-        cout << endl << "-================-" << endl;
+    list<int> myList = {1,3,5,7,9,2,4,6,8,10,12,11,14,13,16,15};
+    evenVec.resize(myVec.size());
+    copy(myList.begin(), myList.end(), evenVec.begin());
+    for_each(evenVec.begin(), evenVec.end(), [](int& value){ value *= 2;});
 
-        cout << _myUMap.bucket_count() << endl;
-        cout << _myUMap.load_factor() << endl;
-        cout << endl << "-================-" << endl;
-    }
+    for (const int& element : evenVec)
+        cout << element << " ";
+    cout << endl << " -=================- " << endl;
 
-    std::string str = "hello world";
+    swap(myVec, evenVec);
 
-    for (char& sign : str)
-        cout << sign;
-    cout << endl;
-    str[1] = 'P';
-    cout << str << endl;
-    cout << "-================================-" << endl;
+    for (const int& element : myVec)
+        cout << element << " ";
+    cout << endl << " -=================- " << endl;
 
-    std::string value = "Another";
-    func([&value](){cout << "Hello " << value << " World" << endl; return 0;});
-    // helloFunc();
+    for (const int& element : evenVec)
+        cout << element << " ";
+    cout << endl << " -=================- " << endl;
+
+    myVec = std::move(evenVec);
+
+    for (const int& element : myVec)
+        cout << element << " ";
+    cout << endl << " -=================- " << endl;
+
+    for (const int& element : evenVec)
+        cout << element << " ";
+    cout << endl << " -=================- " << endl;
+
+    myVec.resize(
+                count_if(
+                    myVec.begin(),
+                    remove_if(
+                        myVec.begin(),
+                        myVec.end(),
+                        [](const int& value) {return value % 2 == 0;}
+                    ),
+                    [](const int& value) {return true;}
+                )
+            );
+
+    for (const int& element : myVec)
+        cout << element << " ";
+    cout << endl << " -=================- " << endl;
+
+    std::random_device randomDevice;
+    std::mt19937 randomGenerator(randomDevice());
+    shuffle(myVec.begin(), myVec.end(), randomGenerator);
+
+    for (const int& element : myVec)
+        cout << element << " ";
+    cout << endl << " -=================- " << endl;
 
     return 0;
 }
