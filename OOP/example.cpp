@@ -204,7 +204,7 @@ std::ostream& operator<< (std::ostream& stream, const Example& object)
     return stream;
 }
 
-void Example::setName(const std::string& name)
+void Example::setName(const std::string& name) noexcept
 {
     _name = name;
 }

@@ -196,8 +196,8 @@ public:
     int& operator[] (const int& index); // Индексатор - НЕ безопастно - Быстрее
     int& at         (const int& index); // Индексатор - Безопастно    - Медленнее
 
-    void        setName (const std::string& name)      ; // Метод класса
-    std::string getName (                       ) const; // Константный метод класса
+    void        setName (const std::string& name) noexcept; // Метод класса
+    std::string getName (                       ) const   ; // Константный метод класса
 
     inline static std::string KeepAliveSettingsFile = "/etc/keepalived/keepalived.conf"; // Статическое поле
 
