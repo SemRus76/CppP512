@@ -11,6 +11,9 @@ using namespace std;
 Example::Example(const std::string& name) : Example(name, 0)
 {
     // cout << "Вызыван делегирующий конструктор" << endl;
+    _ptr1 = new int(0);
+    throw std::runtime_error(u8"Какая то ошибка");
+    _ptr2 = new int(0);
 }
 
 //                                                                 Поле преинициализации
@@ -52,6 +55,10 @@ void Example::operator=(const Example&& value)
 Example::~Example()
 {
     _name.clear();
+    if (_ptr1)
+        delete _ptr1;
+    if (_ptr2)
+        delete _ptr2;
     // cout << "Вызыван деструктор по-умолчанию" << endl;
 }
 

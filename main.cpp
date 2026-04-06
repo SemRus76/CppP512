@@ -15,65 +15,71 @@
 // #include <conio.h>
 // #include <consoleapi2.h>
 #include <vector>
+#include <memory>
+// #include "OOP/example.h"
 using namespace std;
 // Пометка к потокам - Взаимная блокировка, Deadlock, Гонка, move-семантика
 
 /*
- * Обработка исключений
+ *  Умные указатели - Smart Pointer's
  *
- *  Синтаксис:
- *      try
- *      {
- *          <код, который может привести к ошибке>
- *      }
- *      catch(std::logic_error)
- *      {
- *          <действия при ошибке>
- *      }
- *      catch(std::exception)
- *      {
- *          <действия при ошибке>
- *      }
- *      catch(...)
- *      {
- *          <действия при ошибке>
- *      }
+ *      * - система оберток вокруг привычных "сырых" указателей, которая служит для автоматической вычистки памяти, в случае уничтожения объекта (RAII)
  *
- *      catch(...) - это ловля ошибок, которые вы НЕ предсказывали и НЕ можете обработать
- *      throw <создание объекта ошибки> - бросает ошибку <объект ошибки>
+ *  Виды умных указателей:
+ *
+ *      1. auto_ptr<Type> - максимально простой и тупой указатель, служащий для хранения и уничтожения объекта - deprecated
+ *
+ *          Методы:
+ *              get() - возвращает "сырой" указатель на объект внутри auto_ptr
+ *              release() - возвращает "сырой" указатель на объект внутри auto_ptr И вычищает указатель внутри auto_ptr
+ *              reset(Type* ptr) - заменяет указатель внутри auto_ptr на ptr
+ *
+ *      2. unique_ptr<Type>
+ *      3. shared_ptr<Type>
+ *      4. weak_ptr<Type>
+ *
+ *  ВАЖНО - НИ ОДИН Smart Pointer НЕ создает объект при создании себя.
+ *
+ *      std::make_unique(<объект>) - помещает <объект> в unique_ptr и вернет его для использования
+ *      std::make_shared(<объект>) - помещает <объект> в shared_ptr и вернет его для использования
  *
  */
+
+void func (int number, string* str)
+{
+    weak_ptr<string> ptr = std::make_shared<string>(*str);
+    if (number < 5)
+        func(number + 1, str);
+}
 
 int main() // Это главная функция программы - Ее начало и ее конец
 {
     // setlocale(LC_ALL, "RUS");
     // setConsoleCP(1251);
     // setConsoleOutputCP(1251);
-    try
-    {
-        vector<int> myVec;
-        // myVec.push_back(0);
-        if (!(myVec.size() > 10))
-            throw std::out_of_range("ТЫ ЗАЧЕМ ВЫШЕЛ ЗА ГРАНИЦУ МАССИВА!");
-        cout << myVec[10] << endl;
-    }
-    catch(std::out_of_range error)
-    {
-        cout << "Выход за границу массива - " << error.what() << endl;
-    }
-    catch(std::logic_error error)
-    {
-        cout << "Произошла какая то логическая ошибка - "  << error.what() << endl;
-    }
-    catch(std::exception error)
-    {
-        cout << "Произошла какое то исключение - " << error.what() << endl;
-    }
-    catch(...)
-    {
-        cout << "Произошла какая то ошибка" << endl;
-    }
-    cout << "Hello World" << endl;
+
+    unique_ptr<string> unPtr;
+    unPtr.reset(new string("Hello World"));
+    unique_ptr<string> unPtr2(new string("Hi"));
+    unPtr.swap(unPtr2);
+
+    cout << *unPtr2 << endl;
+    cout << *unPtr << endl;
+
+    cout << "-====================-" << endl;
+
+    shared_ptr<string> shPtr(new string("Hello World"));
+    shared_ptr<string> shPtr2(shPtr);
+
+    cout << shPtr << endl << shPtr2 << endl;
+    cout << shPtr.use_count() << endl;
+    cout << shPtr2.use_count() << endl;
+    shPtr2.reset();
+    cout << shPtr.use_count() << endl;
+
+    cout << "-====================-" << endl;
+
+    func(0, new string("Number"));
 
     return 0;
 }

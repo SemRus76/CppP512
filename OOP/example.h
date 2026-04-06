@@ -205,9 +205,11 @@ public:
 
 private:
 
-    std::string      _name        ; // Поле класса
-    int              _number = {0}; // Поле класса
-    std::vector<int> _vec         ; // Поле класса
+    std::string      _name              ; // Поле класса
+    int              _number = {0}      ; // Поле класса
+    std::vector<int> _vec               ; // Поле класса
+    int*             _ptr1   = {nullptr};
+    int*             _ptr2   = {nullptr};
 
 };
 
