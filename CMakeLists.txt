@@ -4,6 +4,7 @@ cmake_minimum_required(VERSION 4.2.1) # минимальная версия Cmak
 project(Les LANGUAGES C CXX)
 
 # find_package(Qt6 REQUIRED COMPONENTS Core)
+find_package(Boost)
 
 # Настройка стандартов
 set(CMAKE_CXX_STANDARD 17)
