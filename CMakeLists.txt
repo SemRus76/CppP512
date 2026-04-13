@@ -14,7 +14,8 @@ add_subdirectory(data_struct)
 add_subdirectory(OOP)
 
 # Добавление исполняемого файла
-add_executable(${PROJECT_NAME} main.cpp)
+add_executable(${PROJECT_NAME} main.cpp
+    myclass.h myclass.cpp)
 target_link_libraries(${PROJECT_NAME} PUBLIC DataStruct_object oop_object practics_object)
 target_include_directories(${PROJECT_NAME} PUBLIC DataStruct_object oop_object practics_object)
 
