@@ -7,70 +7,84 @@ MyClass::MyClass(const int& number) : _count(number)
 MyClass::~MyClass()
 {}
 
-void MyClass::run()
+void MyClass::stopThread()
 {
-    int number = {0};
-    {
-        // lock_guard guard(_mutex);
-        scoped_lock locker(_mutex);
-        if (_count < 0)
-        {
-            return;
-        }
-        if (_count == 0)
-        {
-            cout << 0 << endl;
-            return;
-        }
-
-        if (_count == 1)
-        {
-            cout << 0 << " " << 1 << " " << endl;
-            return;
-        }
-        number = _count;
-    }
-
-    int First = 0;
-    int Second = 1;
-    std::vector<int> result;
-    result.reserve(number);
-    for (int i = 0; i < number; ++i)
-    {
-        First = First + Second;
-        Second = First - Second;
-        result.push_back(First);
-    }
-
-    {
-        // lock_guard<std::mutex> guard(_mutex2);
-        scoped_lock locker(_mutex2);
-        cout << 0 << " " ;
-        for (auto& element : result)
-            cout << element << " ";
-        cout << endl;
-    }
-    return;
+    unique_lock guard(_mutex);
+    _stopThread = true;
 }
 
-void MyClass::operator()(const int& number)
+void MyClass::operator()()
 {
+    // Первичная инициализация перед основым циклом работы потока
+    while(true)
     {
-        lock_guard guard(_mutex);
-        if (number > _count)
-            _count = number;
-        // this_thread::sleep_for(std::chrono::milliseconds(100));
+        { /// Блок для мьютекса
+            unique_lock guard(_mutex);
+            if (_stopThread)
+                break;
+        }
+        // Основым цикл работы потока
+        if (_fibbon.size() < _count)
+        {
+            unique_lock guard(_mutex);
+            int oldSize = _fibbon.size();
+            if (!oldSize)
+            {
+                _fibbon.push_back(0);
+                _fibbon.push_back(1);
+                oldSize = 2;
+            }
+            _fibbon.resize(_count + 1);
+            for (int i = oldSize; i < _fibbon.size(); ++i)
+                _fibbon[i] = _fibbon[i-1] + _fibbon[i-2];
+        }
+        else if (_fibbon.size() > _count)
+        {
+            _fibbon.resize(_count + 1);
+        }
+        else
+        {
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        }
+        {
+            unique_lock guard(_mutex);
+            if (!_readyRead)
+            {
+                _readyRead = true;
+            }
+        }
     }
-    run();
 }
 
-int MyClass::count() const
+std::vector<uint64_t> MyClass::getFibbonachiNumber()
 {
-    return _count;
+    unique_lock guard(_mutex);
+    return _fibbon;
 }
 
-void MyClass::setCount(int newCount)
+bool MyClass::isReadyRead()
 {
-    scoped_lock guard(_mutex);
-    _count = newCount;
+    bool flag = {false};
+    {
+        unique_lock guard(_mutex);
+        flag = _readyRead;
+    }
+    return flag;
+}
+
+void MyClass::setFibbonachiNumberCount(const int& number)
+{
+    unique_lock guard(_mutex);
+    _count = number;
+    _readyRead = false;
+}
+
+int MyClass::getFibbonachiNumberCount()
+{
+    bool count = {0};
+    {
+        unique_lock guard(_mutex);
+        count = _count;
+    }
+    return count;
 }

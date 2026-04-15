@@ -103,20 +103,42 @@ using namespace std;
  *              - std::mutex - обычный мьютекс, блокирующий выполнение кода
  *              - std::recursive_mutex - надстройка над std::mutex, которая подсчитывает вызовы с учетом рекурсии или вызова ниже по стеку
  *
- *      2. lock_guard <имя>(<объект мьютекса>) - блокирует мьютекс до своего уничтожения
- *      3. scoped_lock <имя>(<объект мьютекса>, <объект мьютекса>, ...) - тот lock_guard, но с возможностью блокировки нескольких мьютексов
+ *      2. lock_guard  <имя>(<объект мьютекса>) - блокирует мьютекс до своего уничтожения
+ *      3. scoped_lock <имя>(<объект мьютекса>, <объект мьютекса>, ...) - тот же lock_guard, но с возможностью блокировки нескольких мьютексов
+ *      4. unique_lock <имя>(<объект мьютекса>) - тот же lock_guard, но с возможностью отложенной блокировки в том числе по времени. От shared_lock отличается так же как unique_ptr отличается от shared_ptr
+ *      5. shared_lock <имя>(<объект мьютекса>) - тот же lock_guard, но с возможностью отложенной блокировки в том числе по времени. От unique_lock отличается так же как shared_ptr отличается от unique_ptr
+ *
  */
 
 /*
- * Проблемы Многопточности и их решения:
+ * Проблемы Многопоточности и их решения:
  *
  *      Deadlock - ситуация в коде, когда поток выполнения по какой-либо причине блокируется навечно. Например:
  *          - блокировка мьютексом, который уже заблокирован в функции выше по стеку вызовов.
  *
  *          Решение: Не входить в состояние Deadlock.
+ *
+ *      Взаимная блокировка - это ситуация, когда два потока блокируются двумя разными мьютексами, но при этом разблокировать их невозможно потому что разблокировка происходит ниже по коду в этих потоках
+ *
+ *          Решение: Не входить в состояние Взаимной блокировки.
+ *          ВАЖНО - ответ на вопрос на собеседовании - 2 мьютекса
+ *          Забавный ответ - 0 мьютексов
+ *
+ *      Гонка потоков - это состояние системы, при котором верность работы программы зависит от правильной последовательности работы потоков.
+ *
+ *          ВАЖНО - вы НИКОГДА НЕ ДОЛЖНЫ думать о потоках, как о последовательных объектах.
+ *          Решение: Перепланировка Архитектуры приложения таким образом, что бы заставить работать потоки НЕЗАВИСМО друг от друга.
+ *
+ *      Проблема разделения ресурсов (aka Проблема владения ресурсами)
+ *          ВАЖНО - потоки НИКОГДА не должны разделять один ресурс между собой и взаимодействовать с ним на ЗАПИСЬ одновременное и ассинхронно.
+ *
+ */
+
+/*
+ *  Atomic
  */
 #include "myclass.h"
-mutex mut;
+mutex mut, mut2;
 
 void function(const std::string sign = "*")
 {
@@ -132,6 +154,57 @@ void function(const std::string sign = "*")
     return;
 }
 
+void Fibon_1(const int& number)
+{
+    unique_lock guard(mut);
+    int First = 0;
+    int Second = 1;
+    std::vector<int> result;
+    result.reserve(number);
+    for (int i = 0; i < number; ++i)
+    {
+        First = First + Second;
+        Second = First - Second;
+        result.push_back(First);
+    }
+    this_thread::sleep_for(chrono::seconds(1));
+    unique_lock guard2(mut2);
+    {
+        // lock_guard<std::mutex> guard(_mutex2);
+        cout << 0 << " " ;
+        for (auto& element : result)
+            cout << element << " ";
+        cout << endl;
+    }
+}
+
+void Fibon_2(const int& number)
+{
+    unique_lock guard2(mut2);
+    int First = 0;
+    int Second = 1;
+    std::vector<int> result;
+    result.reserve(number);
+    for (int i = 0; i < number; ++i)
+    {
+        First = First + Second;
+        Second = First - Second;
+        result.push_back(First);
+    }
+    this_thread::sleep_for(chrono::seconds(1));
+    unique_lock guard(mut);
+    {
+        // lock_guard<std::mutex> guard(_mutex2);
+        cout << 0 << " " ;
+        for (auto& element : result)
+            cout << element << " ";
+        cout << endl;
+    }
+}
+
+
+
+
 int main() // Это главная функция программы - Ее начало и ее конец
 {
     // setlocale(LC_ALL, "RUS");
@@ -139,52 +212,29 @@ int main() // Это главная функция программы - Ее н�
     // setConsoleOutputCP(1251);
 
     cout << this_thread::get_id() << endl;
-    bool flag = {false};
 
-    if (flag)
+    MyClass obj(12);
+    std::thread th(std::ref(obj));
+
+    int input = {12};
+    while (input > -1)
     {
-        std::thread th1(function, std::string("*"));
-
-        th1.join();
-
-        cout << "-========================-" << endl;
-
-        MyClass obj(12);
-
-        // obj.setCount(12);
-
-        std::thread th2(&MyClass::run, &obj);
-
-        th2.join();
-
-        cout << "-========================-" << endl;
-
-        // std::thread th3(MyClass(10));
-
-        // th3.join();
-
-        cout << "-========================-" << endl;
-
-        std::thread th4([&](){obj.run();});
-
-        th4.join();
-    }
-    else
-    {
-        cout << "-========================-" << endl;
-        MyClass obj(12);
-        std::thread th1(std::ref(obj), 16);
-        std::thread th2(std::ref(obj), 19);
-        std::thread th3(std::ref(obj), 22);
-        std::thread th4(std::ref(obj), 25);
-
-        th1.join();
-        th2.join();
-        th3.join();
-        th4.join();
-        cout << "-========================-" << endl;
+        cout << "Введите необходимое число (-1 - выход из программы):";
+        cin >> input;
+        obj.setFibbonachiNumberCount(input);
+        while (!obj.isReadyRead())
+        {
+            cout << "Ждем результатов..." << endl;
+            this_thread::sleep_for(std::chrono::milliseconds(100));
+        }
+        auto fibbon = obj.getFibbonachiNumber();
+        for (int i = 0; i < fibbon.size(); ++i)
+            cout << i << "-ый элемент = " << fibbon[i] << endl;
+        cout << "-=======================-" << endl;
     }
 
+    obj.stopThread();
+    th.join();
     return 0;
 }
 

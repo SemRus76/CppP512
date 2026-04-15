@@ -2,7 +2,9 @@
 #include <iostream>
 #include <thread>
 #include <mutex>
+#include <shared_mutex>
 #include <vector>
+#include <atomic>
 
 
 class MyClass
@@ -17,19 +19,25 @@ public:
      MyClass           (      MyClass&&) = delete;
      MyClass operator= (      MyClass&&) = delete;
 
-    void run();
+    void stopThread();
 
     // Функтор - это особый оператор класса, который позволяет вызывать объект класса подобно функции
-    void operator() (const int& number);
+    void operator() ();
 
+    std::vector<uint64_t> getFibbonachiNumber();
+    bool isReadyRead();
+    void setFibbonachiNumberCount(const int& number);
+    int  getFibbonachiNumberCount();
 
-    int count() const;
-    void setCount(int newCount);
 
 private:
 
-    int _count = {0};
-    std::recursive_mutex _mutex;
-    std::mutex _mutex2;
+    std::mutex            _mutex;
+    std::atomic_bool      _stopThread = {false};
+
+    int                   _count  = {0};
+    bool                  _readyRead = {false};
+    std::vector<uint64_t> _fibbon = {};
+
 };
 
