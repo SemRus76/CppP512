@@ -59,7 +59,7 @@ void MyClass::operator()()
 std::vector<uint64_t> MyClass::getFibbonachiNumber()
 {
     unique_lock guard(_mutex);
-    return _fibbon;
+    return std::move(_fibbon);
 }
 
 bool MyClass::isReadyRead()

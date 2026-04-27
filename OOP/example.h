@@ -54,7 +54,7 @@
  *      4. Два конструктора Копирования - конструкторы, которые собирают объект на основе другого объекта класса (по-простому создают копию объекта)
  *
  *
- *  Правило 4-or-0:
+ *  Правило 5-or-0:
  *
  *      Вы ВСЕГДА либо перегружаете ВСЕ конструкторы копирования, либо не перегружаете ни один
  *
@@ -159,8 +159,8 @@ public:
      Example             (const std::string& name, const int& number)          ; // Конструктор с параметром
      Example             (const Example&                            )          ; // Конструктор копирования на lvalue
      void     operator=  (const Example&                            )          ;
-     Example             (const Example&&                           )          ; // Конструктор копирования на rvalue
-     void     operator=  (const Example&&                           )          ;
+     Example             (const Example&&                           )  noexcept; // Конструктор копирования на rvalue
+     void     operator=  (const Example&&                           )  noexcept;
     ~Example             (                                          )          ; // Деструктор класса
 
     // Операторы
