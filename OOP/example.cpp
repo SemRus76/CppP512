@@ -39,14 +39,14 @@ void Example::operator=(const Example& value)
     _number = value._number;
 }
 
-Example::Example(const Example&& object)
+Example::Example(const Example&& object) noexcept
 {
     _name = object._name;
     _number = object._number;
     // cout << "Вызыван rvalue Конструктор копирования" << endl;
 }
 
-void Example::operator=(const Example&& value)
+void Example::operator=(const Example&& value) noexcept
 {
     _name = value._name;
     _number = value._number;

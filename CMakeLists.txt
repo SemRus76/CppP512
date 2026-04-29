@@ -21,6 +21,8 @@ target_include_directories(${PROJECT_NAME} PUBLIC DataStruct_object oop_object p
 
 file(COPY ${CMAKE_SOURCE_DIR}/test.txt DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/)
 
+target_compile_definitions(${PROJECT_NAME} PUBLIC "SAVE_FILE=\"${CMAKE_BINARY_DIR}/temp.txt\"")
+
 # target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Core)
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_FLAGS "-Wall -Wextra -Wpedantic")
 

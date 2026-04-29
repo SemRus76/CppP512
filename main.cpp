@@ -10,6 +10,7 @@
 #include <unistd.h>
 #include <stdexcept>
 #include <cerrno>
+#include <filesystem>
 
 // #include <Windows.h> // Для русского языка
 // #include <conio.h>
@@ -205,6 +206,7 @@ using namespace std;
  *  ВАЖНО - использование atomic НЕ ГАРАНТИРУЕТ потокобезопасность
  *
  */
+
 #include "myclass.h"
 mutex mut, mut2;
 
@@ -270,8 +272,86 @@ void Fibon_2(const int& number)
     }
 }
 
+/*
+ * Кастование aka Кастинг aka Правильное преобразование типов (Преобразование типов в стиле C++)
+ *
+ *  Кастование - это процесс или же механизм для правильного и аккуратного преобразования типов
+ *
+ *      - static_cast - преобразовывает значения статически (на этапе компиляции)
+ *          1) С простыми типами
+ *          2) void*
+ *          3) Хождение по наследованию в одном направлении - наверх
+ *          4) enum
+ *
+ *      - dynamic_cast - преобразовывает значения ДИНАМИЧЕСКИ (на этапе выполнения кода)
+ *          ВАЖНО - для преобразования необходимо учества 3 условия:
+ *              1) может преобразовывать ТОЛЬКО struct и class
+ *              2) может преобразовывать ТОЛЬКО объекты с хотя бы одной virtual функцией
+ *              3) может преобразовывать ТОЛЬКО reference value - указатели
+ *          ВАЖНО - если кастование не проходит - бросает ошибку std::bad_cast
+ *          ВАЖНО - если кастование возможно технически, но не возможно логически - вернет nullptr
+ *
+ *          АРХИВАЖНО - dynamic_cast - весьма дорогое удовольствие (примерно в 5 раз медленнее static_cast).
+ *
+ *      - reinterpret_cast - РЕинтерпритирует память исходного объекта, как память кастумоего объекта
+ *         (!!!!!!) МЕГААРХИВАЖНО (!!!!!!) - Использовать ТОЛЬКО если вы уверены, что делаете.
+ *
+ *      - const_cast - Позволяет навесить или снять const модификатор с переменной
+ *          ВАЖНО - при снятии const модификатора важно быть уверенным, что объект ИЗНАЧАЛЬНО не const
+ *
+ *      - C-style
+ *
+ *
+ *      - Qt casting - qobject_cast
+ */
 
+enum LightStatus
+{
+    ON  = 20,
+    OFF = 30
+};
 
+struct Base
+{
+    Base() = default;
+    virtual ~Base() = default;
+
+    int baseValue = 10;
+};
+
+struct Dev : public Base
+{
+    Dev() = default;
+    virtual ~Dev() = default;
+
+    double devValue = 3.14;
+};
+
+struct PM : public Base
+{
+    PM() = default;
+    virtual ~PM() = default;
+
+    float pmValue = 6.18;
+};
+
+struct Product : public Dev, public PM
+{
+    Product() = default;
+    virtual ~Product() = default;
+
+    string productValue = "Hello World";
+};
+
+void func(const int& value)
+{
+    cout << value << endl;
+    int* val = const_cast<int*>(&value);
+
+    cout << *val << endl;
+    *val = 11;
+    cout << *val << endl;
+}
 
 int main() // Это главная функция программы - Ее начало и ее конец
 {
@@ -279,8 +359,35 @@ int main() // Это главная функция программы - Ее н�
     // setConsoleCP(1251);
     // setConsoleOutputCP(1251);
 
-    // Объяснить Кастование - static_cast, dynamic_cast, const_cast, reinterpret_cast, C-style, Qt casting
+    LightStatus status = LightStatus::OFF;
+    int value = status;
+    status = static_cast<LightStatus>(value);
+    cout << status << endl;
 
+    Product* prodObj = new Product();
+
+    Dev* obj = static_cast<Dev*>(prodObj);
+    cout << obj->baseValue << " - " << obj->devValue << endl;
+    PM* pmObj = dynamic_cast<Product*>(obj);
+    cout << pmObj->pmValue << " - " << pmObj->baseValue << endl;
+
+    delete prodObj;
+
+    long long* val = new long long(10); // 00000000 ... 00001010
+    double* dVal = reinterpret_cast<double*>(val);
+    cout << *dVal << endl;
+
+    delete val;
+
+    const int nonConstVal = {10};
+
+    func(nonConstVal);
+    cout << nonConstVal << endl;
+
+    int num = {10};
+    unsigned int uNum = (unsigned int)num;
+
+    double dum = (double)3.14;
 
 
 
